@@ -1,23 +1,22 @@
-const Koa= require('koa');
+require('./Schemas/User');
+const mongoose=require('mongoose');
 
-const  app = new Koa();
- //通过app.use 注册中间件
-//中间件本质上 它就是一个函数
-//context 上下文  当前请求的相关信息都在里面
+const connect=()=>{
+    return new Promise((resolve)=>{
+        mongoose.connect('mongodb://127.0.0.1:27017/book-mgr');
+        
+        mongoose.connection.on('open',()=>{
+            console.log('连接数据库成功！');
+        resolve();
+        });
+    });
+  
 
-app.use((context)=>{
-	const {request:req }=context;
-	const {url}=req;
-	if(url==='/user'){
-		context.response.body='abcde';
-		return;
-	}
-	context.body='??';
-})
-//开启一个http服务
-//接受http请求并处理，处理完后响应
-app.listen(3000,()=>{
- 	console.log('启动成功');
- });
+};
 
- console.log('1123333');
+module.exports={
+    connect,
+};
+
+
+
