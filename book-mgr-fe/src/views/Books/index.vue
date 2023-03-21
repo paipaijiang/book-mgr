@@ -26,6 +26,7 @@
 			:columns="columns"
 			:data-source="list"
 			:pagination="false"
+			bordered
 			>
             <template #publishDate="data">
 				{{ formatTimestamp(data.record.publishDate) }}
@@ -44,6 +45,11 @@
 			</template>
 
 			<template #actions="record">
+				<a 
+				href="javascript:;" 
+				@click="toDetail(record)"
+				>详情</a>
+				&nbsp;
 				<a 
 				href="javascript:;" 
 				@click="update(record)"

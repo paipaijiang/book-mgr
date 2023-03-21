@@ -1,5 +1,6 @@
 import {defineComponent,ref,onMounted,} from 'vue';
 import {book} from '@/service';
+import {useRouter }from 'vue-router';
 import {message,Modal,Input} from 'ant-design-vue';
 import {result,formatTimestamp} from '@/helpers/utils';
 
@@ -14,6 +15,7 @@ export default defineComponent({
 	},
 
 	setup(){
+		const router =useRouter();
 		const columns=[
 				{
 					title:'书名',
@@ -111,14 +113,7 @@ export default defineComponent({
 
  			result(res)
  			.success(({msg})=>{
- 				message.success(msg);
-
- 				// const idx =list.value.findIndex((item)=>{
- 				// 	return item._id === _id;
- 				// });
-
- 				// list.value.splice(idx,1);
- 				getList();
+ 				
  			});
     	 };
 
@@ -150,7 +145,7 @@ export default defineComponent({
     	 			result(res)
     	 				.success((data)=>{
 
-    	 					if(type===type){
+    	 					if(type==='IN_COUNT'){
 							//入库操作
 							num =Math.abs(num);
 							}else{
@@ -171,31 +166,42 @@ export default defineComponent({
     	 	});
     	 };
 
-    	 const update = ({record})=>{
-    	 	showUpdateModal.value=true;
-    	 	curEditBook.value=record;
-    	 };
-    	  const updateCurBook=(newData)=>{
-    	  	Object.assign(curEditBook.value,newData);
-    	  };
-		return{
-			columns,
-			show,
-			list,
-			formatTimestamp,
-			curPage,
-			total,
-			setPage,
-			keyword,
-			onSearch,
-			backAll,
-			isSearch,
-			remove,
-			updateCount,
-			showUpdateModal,
-			update,
-			curEditBook,
-			updateCurBook,
-		};
+
+//显示更新弹框
+const update = ({record})=>{
+	showUpdateModal.value=true;
+	curEditBook.value=record;
+};
+
+//更新列表的某一行数据
+const updateCurBook=(newData)=>{
+	Object.assign(curEditBook.value,newData);
+};
+//进入书籍详情页
+ const toDetail=({record})=>{
+ 	router.push(`/books/${record._id}`);
+ };
+
+
+return{
+	columns,
+	show,
+	list,
+	formatTimestamp,
+	curPage,
+	total,
+	setPage,
+	keyword,
+	onSearch,
+	backAll,
+	isSearch,
+	remove,
+	updateCount,
+	showUpdateModal,
+	update,
+	curEditBook,
+	updateCurBook,
+	toDetail,
+	};
 	},
 });
