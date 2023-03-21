@@ -6,7 +6,7 @@ const config = require('../../project.config')
 //const {getBody}= require('../../helpers/utils');
 
 const User= mongoose.model('User');
-
+const Character= mongoose.model('Character');
 
 const router = new Router({
 	prefix:'/user',
@@ -72,11 +72,26 @@ router.post('/add',async(ctx)=>{
    const {
       account,
       password,
+      character,
    }=ctx.request.body;
+
+ const char = await Character.findOne({
+   _id:character,
+ });
+
+  if (!char) {
+   ctx.body={
+      msg:'出错啦',
+      code:0,
+   };
+   return;
+  }
+
 
    const user =new User({
       account,
       password: password||'123123',
+      character,
    });
 
    const res =await user.save()
@@ -121,6 +136,50 @@ router.post('/add',async(ctx)=>{
    };
  });
 
+
+router.post('/update/character',async(ctx)=>{
+   const {
+      character,
+      userId,
+   }=ctx.request.body;
+
+   const char = await Character.findOne({
+      _id:character,
+   });
+
+ if (!char) {
+   ctx.body={
+      msg:'出错啦',
+      code:0,
+   };
+   return;
+  }
+
+
+  const user =await User.findOne({
+   _id:userId,
+  });
+if (!user) {
+   ctx.body={
+      msg:'出错啦',
+      code:0,
+   };
+
+   return;
+  };
+
+
+  user.character=character;
+
+  const res =await user.save();
+
+  ctx.body={
+   data:res,
+   code:1,
+   msg:'修改成功'
+  };
+
+});
 
 module.exports=router;
 
